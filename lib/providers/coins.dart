@@ -49,7 +49,7 @@ class CoinsProvider with ChangeNotifier {
         percentChange24h: "-10%"),
     Coin(
         id: "5",
-        name: "Shiba INU Cash",
+        name: "Shiba INU",
         imageUrl: "https://cryptologos.cc/logos/shiba-inu-shib-logo.png?v=014",
         symbol: "SHIB",
         priceUsd: "10,230",
