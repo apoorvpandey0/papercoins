@@ -11,7 +11,7 @@ class PortfolioPage extends StatelessWidget {
           child: Column(
         children: [
           // Portfolio value
-          _buildPortfolioCard(value.portfolioModel),
+          _buildPortfolioCard(value.portfolioModel, value.items),
           // List of all purchased coins
           Expanded(
             child: ListView.builder(
@@ -101,14 +101,51 @@ class PortfolioPage extends StatelessWidget {
     );
   }
 
-  Container _buildPortfolioCard(PortfolioModel portfolioModel) {
+  Container _buildPortfolioCard(
+      PortfolioModel portfolioModel, List<ItemModel> items) {
     return Container(
-        height: 200,
+        height: 400,
         width: double.infinity,
         child: Card(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SfCircularChart(
+                legend: Legend(
+                  isVisible: true,
+                ),
+                tooltipBehavior: TooltipBehavior(
+                  enable: true,
+                  duration: 1500,
+                  canShowMarker: false,
+                  format: 'point.x : point.y',
+                ),
+                series: [
+                  DoughnutSeries<ItemModel, String>(
+                    dataSource: items,
+                    // explode: true,
+                    dataLabelSettings: DataLabelSettings(
+                      isVisible: true,
+                      labelPosition: ChartDataLabelPosition.outside,
+                      labelAlignment: ChartDataLabelAlignment.middle,
+                      textStyle: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    xValueMapper: (ItemModel data, _) => data.name,
+                    yValueMapper: (ItemModel data, _) =>
+                        int.parse(data.investedAmount),
+                    enableTooltip: true,
+                    dataLabelMapper: (ItemModel data, _) =>
+                        (double.parse(data.investedAmount) /
+                                double.parse(portfolioModel.totalInvested) *
+                                100)
+                            .toStringAsFixed(2) +
+                        "%",
+                  ),
+                ],
+              ),
               Text(
                 "₹ " + portfolioModel.currentValue.toString(),
                 style: TextStyle(fontSize: 35),
