@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:papercoins/providers/coins.dart';
 import 'package:papercoins/providers/history.dart';
+import 'package:papercoins/providers/investments.dart';
 import 'package:papercoins/screens/home/home-screen.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (context) => CoinsProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => InvestmentsProvider(),
         ),
       ],
       child: MaterialApp(
