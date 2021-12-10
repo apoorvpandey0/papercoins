@@ -20,8 +20,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         centerTitle: true,
-        title: Text('PaperCoins'),
+        title: Image.asset(
+          'assets/logo.png',
+          filterQuality: FilterQuality.high,
+          height: 40,
+        ),
       ),
       body: PageView(
         physics: NeverScrollableScrollPhysics(),
