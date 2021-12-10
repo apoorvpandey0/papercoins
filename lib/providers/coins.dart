@@ -7,6 +7,7 @@ class Coin {
   late String symbol;
   late String priceUsd;
   late String percentChange24h;
+  bool inProfit;
 
   Coin(
       {required this.id,
@@ -14,12 +15,14 @@ class Coin {
       required this.imageUrl,
       required this.symbol,
       required this.priceUsd,
+      required this.inProfit,
       required this.percentChange24h});
 }
 
 class CoinsProvider with ChangeNotifier {
   static List<Coin> _coins = [
     Coin(
+        inProfit: true,
         id: "1",
         name: "Bitcoin",
         imageUrl: "https://www.cryptocompare.com/media/19633/btc.png",
@@ -27,6 +30,7 @@ class CoinsProvider with ChangeNotifier {
         priceUsd: "55,230",
         percentChange24h: "-10%"),
     Coin(
+        inProfit: true,
         id: "2",
         name: "Ethereum",
         imageUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=014",
@@ -34,6 +38,7 @@ class CoinsProvider with ChangeNotifier {
         priceUsd: "10,230",
         percentChange24h: "-10%"),
     Coin(
+        inProfit: true,
         id: "3",
         name: "Solana",
         imageUrl: "https://cryptologos.cc/logos/solana-sol-logo.png?v=014",
@@ -41,6 +46,7 @@ class CoinsProvider with ChangeNotifier {
         priceUsd: "10,230",
         percentChange24h: "-10%"),
     Coin(
+        inProfit: true,
         id: "4",
         name: "Litecoin",
         imageUrl: "https://cryptologos.cc/logos/litecoin-ltc-logo.png?v=014",
@@ -48,6 +54,7 @@ class CoinsProvider with ChangeNotifier {
         priceUsd: "10,230",
         percentChange24h: "-10%"),
     Coin(
+        inProfit: true,
         id: "5",
         name: "Shiba INU",
         imageUrl: "https://cryptologos.cc/logos/shiba-inu-shib-logo.png?v=014",
@@ -55,6 +62,7 @@ class CoinsProvider with ChangeNotifier {
         priceUsd: "10,230",
         percentChange24h: "-10%"),
     Coin(
+        inProfit: true,
         id: "6",
         name: "Uniswap",
         imageUrl: "https://cryptologos.cc/logos/uniswap-uni-logo.png?v=014",
