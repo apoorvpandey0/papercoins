@@ -3,6 +3,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:papercoins/providers/coins.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class CoinDetailsPage extends StatefulWidget {
   final Coin coin;
@@ -18,19 +19,109 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    // return BuyCoinPage();
     return Scaffold(
       body: Container(
-        child: Column(children: [
+        height: MediaQuery.of(context).size.height,
+        child: ListView(children: [
           _buildHeader(),
-          // Graph section starts here
           _buildGraphSection(),
           SizedBox(height: 20),
-          //  Coin performance section
           _buildCoinPerformanceSection(),
-          Spacer(),
-          _buildBuySellButtons()
+          _buildCoinGauge(),
         ]),
       ),
+      bottomNavigationBar: _buildBuySellButtons(),
+    );
+  }
+
+  SfRadialGauge _buildCoinGauge() {
+    return SfRadialGauge(
+      title: GaugeTitle(
+        text: 'Coin Performance',
+        textStyle: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      enableLoadingAnimation: true,
+      axes: [
+        RadialAxis(
+            showLabels: true,
+            startAngle: 180,
+            endAngle: 360,
+            radiusFactor: 0.8,
+            interval: 100,
+            ranges: [
+              // First
+              GaugeRange(
+                startValue: 0,
+                endValue: 1 * (100 / 6),
+                color: Colors.red,
+                startWidth: 20,
+                endWidth: 20,
+              ),
+              // Second
+              GaugeRange(
+                  startValue: 1 * (100 / 6),
+                  endValue: 2 * (100 / 6),
+                  color: Colors.redAccent,
+                  startWidth: 20,
+                  endWidth: 20),
+              // Third
+              GaugeRange(
+                  startValue: 2 * (100 / 6),
+                  endValue: 3 * (100 / 6),
+                  color: Colors.orange,
+                  startWidth: 20,
+                  endWidth: 20),
+              // Fourth
+              GaugeRange(
+                  startValue: 3 * (100 / 6),
+                  endValue: 4 * (100 / 6),
+                  color: Colors.orangeAccent,
+                  startWidth: 20,
+                  endWidth: 20),
+              // Fifth
+              GaugeRange(
+                  startValue: 4 * (100 / 6),
+                  endValue: 5 * (100 / 6),
+                  color: Colors.lightGreen,
+                  startWidth: 20,
+                  endWidth: 20),
+              // sIXTH
+              GaugeRange(
+                  startValue: 5 * (100 / 6),
+                  endValue: 6 * (100 / 6),
+                  color: Colors.green,
+                  startWidth: 20,
+                  endWidth: 20),
+            ],
+            pointers: <GaugePointer>[
+              NeedlePointer(
+                value: 40,
+                needleLength: 0.8,
+              ),
+              MarkerPointer(
+                  markerType: MarkerType.text,
+                  text: 'Poor',
+                  value: 16,
+                  offsetUnit: GaugeSizeUnit.factor,
+                  markerOffset: -0.12),
+              MarkerPointer(
+                  markerType: MarkerType.text,
+                  text: 'Average',
+                  value: 50,
+                  offsetUnit: GaugeSizeUnit.factor,
+                  markerOffset: -0.12),
+              MarkerPointer(
+                  markerType: MarkerType.text,
+                  text: 'Good',
+                  value: 83,
+                  offsetUnit: GaugeSizeUnit.factor,
+                  markerOffset: -0.12)
+            ])
+      ],
     );
   }
 
@@ -48,6 +139,54 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
               ),
               Text(
                 "coin.marketCap",
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "24h Volume",
+                style: TextStyle(fontSize: 16),
+              ),
+              Text(
+                "coin.volume",
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "24h Volume",
+                style: TextStyle(fontSize: 16),
+              ),
+              Text(
+                "coin.volume",
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "24h Volume",
+                style: TextStyle(fontSize: 16),
+              ),
+              Text(
+                "coin.volume",
                 style: TextStyle(fontSize: 16),
               ),
             ],
@@ -127,6 +266,7 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                 ),
               ),
             ]),
+        SizedBox(height: 10),
         SfSparkLineChart(
           axisLineColor: Colors.transparent,
           data: [1, 2, 3, 4, 8, 9, 10, 9, 6, 5, 8, 3, 7, 34, 8, 90, 3, 0],
@@ -149,7 +289,7 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
           style: TextStyle(fontSize: 20),
         ),
         trailing: Container(
-          width: 200,
+          width: 50,
           child: Row(
             children: [
               Spacer(),
@@ -187,9 +327,7 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                   child: Text("BUY"),
                   onPressed: () {
                     showCupertinoModalBottomSheet(
-                      context: context,
-                      builder: (context) => Container(),
-                    );
+                        context: context, builder: (context) => BuyCoinPage());
                   },
                 ),
               ),
@@ -206,13 +344,83 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
                   onPressed: () {
                     showCupertinoModalBottomSheet(
                       context: context,
-                      builder: (context) => Container(),
+                      builder: (context) => BuyCoinPage(),
                     );
                   },
                 ),
               ),
             ),
             SizedBox(width: 15),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class BuyCoinPage extends StatelessWidget {
+  const BuyCoinPage({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            SizedBox(height: 10),
+            Text(
+              "Buy Bitcoin",
+              style: TextStyle(fontSize: 20),
+            ),
+            SizedBox(height: 10),
+            Container(
+              height: 100,
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Funds available to invest:"),
+                  Text(
+                    "₹ " + "19,999,000",
+                    style: TextStyle(fontSize: 35),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    hintText: "Enter amount to buy in INR",
+                    labelText: "Amount",
+                    border: OutlineInputBorder()),
+              ),
+            ),
+            SizedBox(height: 20),
+            OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.check, color: Colors.green),
+                style: ButtonStyle(
+                  side: MaterialStateProperty.all<BorderSide>(
+                    BorderSide(
+                      color: Colors.black,
+                      // width: 2,
+                    ),
+                  ),
+                ),
+                label: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Place order",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ))
           ],
         ),
       ),

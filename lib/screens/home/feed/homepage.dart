@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:papercoins/providers/coins.dart';
+import 'package:papercoins/screens/home/market/coin-details-screen.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -88,60 +90,68 @@ class CoinsList extends StatelessWidget {
               itemCount: coins.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                      height: 130,
-                      width: 130,
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          borderRadius: BorderRadius.circular(15)),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 15,
-                                backgroundColor: Colors.transparent,
-                                backgroundImage:
-                                    NetworkImage(coins[index].imageUrl),
-                              ),
-                              SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  coins[index].name,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black),
+                return GestureDetector(
+                  onTap: () {
+                    showCupertinoModalBottomSheet(
+                        context: context,
+                        builder: (context) =>
+                            CoinDetailsPage(coin: coins[index]));
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                        height: 130,
+                        width: 130,
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(15)),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor: Colors.transparent,
+                                  backgroundImage:
+                                      NetworkImage(coins[index].imageUrl),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Spacer(),
-                          Text(
-                            coins[index].percentChange24h,
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: coins[index].inProfit
-                                    ? Colors.green
-                                    : Colors.red),
-                          ),
-                          Spacer(),
-                          Text(
-                            "\$ " + coins[index].priceUsd.toString(),
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
-                          ),
-                          Spacer(),
-                        ],
-                      )),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    coins[index].name,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            Text(
+                              coins[index].percentChange24h,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: coins[index].inProfit
+                                      ? Colors.green
+                                      : Colors.red),
+                            ),
+                            Spacer(),
+                            Text(
+                              "\$ " + coins[index].priceUsd.toString(),
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                            Spacer(),
+                          ],
+                        )),
+                  ),
                 );
               },
             ),

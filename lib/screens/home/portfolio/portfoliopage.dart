@@ -36,7 +36,10 @@ class PortfolioPage extends StatelessWidget {
             // image and name half of the card
             Row(
               children: [
-                CircleAvatar(),
+                CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  child: Image.network(itemModel.imageUrl),
+                ),
                 SizedBox(width: 10),
                 Text(
                   itemModel.name,
