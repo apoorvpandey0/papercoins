@@ -28,9 +28,11 @@ class MarketPageState extends State<MarketPage> {
             SizedBox(
               height: 50,
               child: AppBar(
-                // backgroundColor: Colors.transparent,
+                backgroundColor: Colors.grey[200],
                 elevation: 0,
                 bottom: TabBar(
+                  labelColor: Colors.black,
+                  indicatorColor: Colors.black,
                   tabs: [
                     Tab(
                       text: "My Watchlist",
