@@ -6,6 +6,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:papercoins/providers/coins.dart';
 import 'package:papercoins/providers/models/coins.dart';
 import 'package:papercoins/screens/home/market/coin-details-screen.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class MarketPage extends StatefulWidget {
@@ -16,48 +17,50 @@ class MarketPage extends StatefulWidget {
 class MarketPageState extends State<MarketPage> {
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        body: Column(
-          children: <Widget>[
-            // construct the profile details widget here
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: SizedBox(height: 50, child: CupertinoSearchTextField()),
-            ),
+    return Consumer<CoinsProvider>(
+      builder: (context, value, child) => DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          body: Column(
+            children: <Widget>[
+              // construct the profile details widget here
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SizedBox(height: 50, child: CupertinoSearchTextField()),
+              ),
 
-            // the tab bar with two items
-            SizedBox(
-              height: 50,
-              child: AppBar(
-                backgroundColor: Colors.grey[200],
-                elevation: 0,
-                bottom: TabBar(
-                  labelColor: Colors.black,
-                  indicatorColor: Colors.black,
-                  tabs: [
-                    Tab(
-                      text: "My Watchlist",
-                    ),
-                    Tab(
-                      text: "All Coins",
-                    ),
+              // the tab bar with two items
+              SizedBox(
+                height: 50,
+                child: AppBar(
+                  backgroundColor: Colors.grey[200],
+                  elevation: 0,
+                  bottom: TabBar(
+                    labelColor: Colors.black,
+                    indicatorColor: Colors.black,
+                    tabs: [
+                      Tab(
+                        text: "My Watchlist",
+                      ),
+                      Tab(
+                        text: "All Coins",
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // create widgets for each tab bar here
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    AllCoinsListWidget(coins: value.coins),
+                    AllCoinsListWidget(coins: value.coins),
                   ],
                 ),
               ),
-            ),
-
-            // create widgets for each tab bar here
-            Expanded(
-              child: TabBarView(
-                children: [
-                  AllCoinsListWidget(),
-                  AllCoinsListWidget(),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -65,13 +68,16 @@ class MarketPageState extends State<MarketPage> {
 }
 
 class AllCoinsListWidget extends StatelessWidget {
+  final List<CoinGeckoCoinModel> coins;
+
+  const AllCoinsListWidget({Key? key, required this.coins}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     // A list of items
     return ListView.builder(
-      itemCount: 1,
+      itemCount: coins.length,
       itemBuilder: (context, index) {
-        return Text("data");
+        return CoinListTileWidget(coin: coins[index]);
         // return CoinListTileWidget(coin: );
       },
     );

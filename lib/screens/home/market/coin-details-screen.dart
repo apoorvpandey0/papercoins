@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:papercoins/providers/coins.dart';
 import 'package:papercoins/providers/models/coins.dart';
 import 'package:papercoins/screens/home/market/buy-sell-screen.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
@@ -18,6 +22,17 @@ class CoinDetailsPage extends StatefulWidget {
 
 class _CoinDetailsPageState extends State<CoinDetailsPage> {
   int chartIndex = 0;
+  String currencyFormatter(number) {
+    // log('currencyFormatter: $number');
+    if (number == null) {
+      return '0';
+    }
+    if (number is String) {
+      return NumberFormat.currency(locale: 'en_US', symbol: '\$')
+          .format((double.parse(number)));
+    }
+    return NumberFormat.currency(locale: 'en_US', symbol: '\$').format(number);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,22 +40,31 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
     return Scaffold(
       body: Container(
         height: MediaQuery.of(context).size.height,
-        child: ListView(children: [
-          _buildHeader(),
-          _buildGraphSection(),
-          SizedBox(height: 20),
-          _buildCoinPerformanceSection(),
-          _buildCoinGauge(),
-        ]),
+        child: Scrollbar(
+          child: ListView(children: [
+            _buildHeader(),
+            _buildGraphSection(),
+            SizedBox(height: 20),
+            _buildCoinPerformanceSection(),
+            _buildCoinGauge(),
+          ]),
+        ),
       ),
       bottomNavigationBar: _buildBuySellButtons(),
     );
   }
 
   SfRadialGauge _buildCoinGauge() {
+    double _getGaugePointer() {
+      // log(widget.coin.priceChangePercentage_7dInCurrency);
+      double x = double.parse(widget.coin.priceChangePercentage_7dInCurrency);
+      double c = 2 * (100 / 6);
+      return 1 * x + c;
+    }
+
     return SfRadialGauge(
       title: GaugeTitle(
-        text: 'Coin Performance',
+        text: 'Fear/Greed Index',
         textStyle: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -101,24 +125,24 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
             ],
             pointers: <GaugePointer>[
               NeedlePointer(
-                value: 40,
+                value: _getGaugePointer(),
                 needleLength: 0.8,
               ),
               MarkerPointer(
                   markerType: MarkerType.text,
-                  text: 'Poor',
+                  text: 'Fear',
                   value: 16,
                   offsetUnit: GaugeSizeUnit.factor,
                   markerOffset: -0.12),
               MarkerPointer(
                   markerType: MarkerType.text,
-                  text: 'Average',
+                  text: 'Neutral',
                   value: 50,
                   offsetUnit: GaugeSizeUnit.factor,
                   markerOffset: -0.12),
               MarkerPointer(
                   markerType: MarkerType.text,
-                  text: 'Good',
+                  text: 'Greed',
                   value: 83,
                   offsetUnit: GaugeSizeUnit.factor,
                   markerOffset: -0.12)
@@ -130,17 +154,19 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
   Column _buildCoinPerformanceSection() {
     return Column(
       children: [
+        Text("Price data",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                "Market Cap",
+                "Current Price",
                 style: TextStyle(fontSize: 16),
               ),
               Text(
-                "coin.marketCap",
+                currencyFormatter((widget.coin.currentPrice)),
                 style: TextStyle(fontSize: 16),
               ),
             ],
@@ -152,27 +178,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                "24h Volume",
+                "24h High",
                 style: TextStyle(fontSize: 16),
               ),
               Text(
-                "coin.volume",
-                style: TextStyle(fontSize: 16),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                "24h Volume",
-                style: TextStyle(fontSize: 16),
-              ),
-              Text(
-                "coin.volume",
+                currencyFormatter((widget.coin.high_24h)),
                 style: TextStyle(fontSize: 16),
               ),
             ],
@@ -184,11 +194,11 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                "24h Volume",
+                "24h Low",
                 style: TextStyle(fontSize: 16),
               ),
               Text(
-                "coin.volume",
+                currencyFormatter((widget.coin.low_24h)),
                 style: TextStyle(fontSize: 16),
               ),
             ],
@@ -200,11 +210,29 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Text(
-                "24h Volume",
+                "7 days high",
                 style: TextStyle(fontSize: 16),
               ),
               Text(
-                "coin.volume",
+                currencyFormatter((widget.coin.sparklineIn_7d.price.reduce(
+                    (value, element) => value > element ? value : element))),
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                "7 days low",
+                style: TextStyle(fontSize: 16),
+              ),
+              Text(
+                currencyFormatter((widget.coin.sparklineIn_7d.price.reduce(
+                    (value, element) => value < element ? value : element))),
                 style: TextStyle(fontSize: 16),
               ),
             ],
@@ -215,63 +243,99 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
   }
 
   Column _buildGraphSection() {
+    final List<Color> color = <Color>[];
+    color.add(Colors.white);
+    color.add(Colors.blue);
+
+    final List<double> stops = <double>[];
+    stops.add(0.0);
+    stops.add(1.0);
+
+    final LinearGradient gradientColors = LinearGradient(
+        colors: color, stops: stops, transform: GradientRotation(3 * 3.14 / 2));
     return Column(
       children: [
-        BottomNavigationBar(
-            elevation: 1,
-            type: BottomNavigationBarType.fixed,
-            currentIndex: chartIndex,
-            onTap: (value) {
-              setState(() {
-                chartIndex = value;
-              });
-            },
-            items: [
-              BottomNavigationBarItem(
-                icon: Text("1 Hour"),
-                activeIcon: Text(
-                  "1 Hour",
-                  style: TextStyle(color: Colors.blue),
-                ),
-                title: Container(
-                  height: 0,
-                ),
-              ),
-              BottomNavigationBarItem(
-                icon: Text("1 Day"),
-                activeIcon: Text(
-                  "1 Day",
-                  style: TextStyle(color: Colors.blue),
-                ),
-                title: Container(
-                  height: 0.0,
-                ),
-              ),
-              BottomNavigationBarItem(
-                icon: Text("1 Week"),
-                activeIcon: Text(
-                  "1 Week",
-                  style: TextStyle(color: Colors.blue),
-                ),
-                title: Container(
-                  height: 0.0,
-                ),
-              ),
-              BottomNavigationBarItem(
-                icon: Text("1 Year"),
-                activeIcon: Text(
-                  "1 Year",
-                  style: TextStyle(color: Colors.blue),
-                ),
-                title: Container(
-                  height: 0.0,
-                ),
-              ),
-            ]),
-        SizedBox(height: 10),
-        SfSparkLineChart(
-          axisLineColor: Colors.transparent,
-          data: [1, 2, 3, 4, 8, 9, 10, 9, 6, 5, 8, 3, 7, 34, 8, 90, 3, 0],
+        // BottomNavigationBar(
+        //     elevation: 1,
+        //     type: BottomNavigationBarType.fixed,
+        //     currentIndex: chartIndex,
+        //     onTap: (value) {
+        //       setState(() {
+        //         chartIndex = value;
+        //       });
+        //     },
+        //     items: [
+        //       BottomNavigationBarItem(
+        //         icon: Text("1 Hour"),
+        //         activeIcon: Text(
+        //           "1 Hour",
+        //           style: TextStyle(color: Colors.blue),
+        //         ),
+        //         title: Container(
+        //           height: 0,
+        //         ),
+        //       ),
+        //       BottomNavigationBarItem(
+        //         icon: Text("1 Day"),
+        //         activeIcon: Text(
+        //           "1 Day",
+        //           style: TextStyle(color: Colors.blue),
+        //         ),
+        //         title: Container(
+        //           height: 0.0,
+        //         ),
+        //       ),
+        //       BottomNavigationBarItem(
+        //         icon: Text("1 Week"),
+        //         activeIcon: Text(
+        //           "1 Week",
+        //           style: TextStyle(color: Colors.blue),
+        //         ),
+        //         title: Container(
+        //           height: 0.0,
+        //         ),
+        //       ),
+        //       BottomNavigationBarItem(
+        //         icon: Text("1 Year"),
+        //         activeIcon: Text(
+        //           "1 Year",
+        //           style: TextStyle(color: Colors.blue),
+        //         ),
+        //         title: Container(
+        //           height: 0.0,
+        //         ),
+        //       ),
+        //     ]),
+        Text("1 Week chart",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SfCartesianChart(
+            crosshairBehavior: CrosshairBehavior(
+              enable: true,
+              activationMode: ActivationMode.singleTap,
+              lineType: CrosshairLineType.horizontal,
+            ),
+            primaryXAxis: NumericAxis(
+              isVisible: false,
+              majorGridLines: MajorGridLines(width: 0),
+              interval: 1,
+              minimum: 0,
+              maximum: 100,
+              // labelFormat: 'MMM dd',
+              // labelRotation: 90,
+            ),
+            series: <ChartSeries>[
+              AreaSeries(
+                gradient: gradientColors,
+                yAxisName: "Price",
+                dataSource: widget.coin.sparklineIn_7d.price,
+                xValueMapper: (data, _) => _,
+                enableTooltip: true,
+                yValueMapper: (data, _) => data,
+              )
+            ],
+          ),
         ),
       ],
     );
@@ -287,7 +351,7 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
           backgroundImage: NetworkImage(widget.coin.image),
         ),
         title: Text(
-          widget.coin.name,
+          widget.coin.name + " (" + widget.coin.symbol + ")",
           style: TextStyle(fontSize: 20),
         ),
         trailing: Container(

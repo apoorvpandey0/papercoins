@@ -22,7 +22,7 @@ class CoinsProvider with ChangeNotifier {
     notifyListeners();
 
     final BASE_URL = "https://api.coingecko.com/api/v3/coins/markets";
-    final vs_currency = "inr";
+    final vs_currency = "usd";
     final order = "market_cap_desc";
     final per_page = "20";
     final page = 1;
