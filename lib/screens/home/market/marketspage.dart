@@ -6,6 +6,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:papercoins/providers/coins.dart';
 import 'package:papercoins/providers/models/coins.dart';
 import 'package:papercoins/screens/home/market/coin-details-screen.dart';
+import 'package:papercoins/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
@@ -111,7 +112,7 @@ class CoinListTileWidget extends StatelessWidget {
           ),
           Spacer(),
           Text(
-            coin.currentPrice.toString(),
+            currencyFormatter(coin.currentPrice),
           ),
         ],
       ),
@@ -119,11 +120,16 @@ class CoinListTileWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            coin.symbol,
+            coin.symbol.toUpperCase(),
           ),
           Spacer(),
           Text(
-            coin.priceChangePercentage_24h.toString(),
+            currencyFormatter(coin.priceChangePercentage_24h),
+            style: TextStyle(
+              color: coin.priceChangePercentage_24h.contains("-")
+                  ? Colors.red
+                  : Colors.green,
+            ),
           ),
         ],
       ),
@@ -133,15 +139,15 @@ class CoinListTileWidget extends StatelessWidget {
   }
 }
 
-class AllCoinsWidget extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        color: Colors.amber,
-        child: Center(
-          child: Text(
-            'All Coins',
-          ),
-        ));
-  }
-}
+// class AllCoinsWidget extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//         color: Colors.amber,
+//         child: Center(
+//           child: Text(
+//             'All Coins',
+//           ),
+//         ));
+//   }
+// }

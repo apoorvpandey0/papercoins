@@ -7,6 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:papercoins/providers/coins.dart';
 import 'package:papercoins/providers/models/coins.dart';
 import 'package:papercoins/screens/home/market/buy-sell-screen.dart';
+import 'package:papercoins/utils/utils.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -22,17 +23,6 @@ class CoinDetailsPage extends StatefulWidget {
 
 class _CoinDetailsPageState extends State<CoinDetailsPage> {
   int chartIndex = 0;
-  String currencyFormatter(number) {
-    // log('currencyFormatter: $number');
-    if (number == null) {
-      return '0';
-    }
-    if (number is String) {
-      return NumberFormat.currency(locale: 'en_US', symbol: '\$')
-          .format((double.parse(number)));
-    }
-    return NumberFormat.currency(locale: 'en_US', symbol: '\$').format(number);
-  }
 
   @override
   Widget build(BuildContext context) {
