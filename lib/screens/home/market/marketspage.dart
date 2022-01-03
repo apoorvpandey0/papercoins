@@ -4,6 +4,7 @@ import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:papercoins/providers/coins.dart';
+import 'package:papercoins/providers/models/coins.dart';
 import 'package:papercoins/screens/home/market/coin-details-screen.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
@@ -68,16 +69,17 @@ class AllCoinsListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // A list of items
     return ListView.builder(
-      itemCount: CoinsProvider.coins.length,
+      itemCount: 1,
       itemBuilder: (context, index) {
-        return CoinListTileWidget(coin: CoinsProvider.coins[index]);
+        return Text("data");
+        // return CoinListTileWidget(coin: );
       },
     );
   }
 }
 
 class CoinListTileWidget extends StatelessWidget {
-  final Coin coin;
+  final CoinGeckoCoinModel coin;
   CoinListTileWidget({required this.coin});
   @override
   Widget build(BuildContext context) {
@@ -92,7 +94,7 @@ class CoinListTileWidget extends StatelessWidget {
       leading: CircleAvatar(
         foregroundColor: Colors.transparent,
         backgroundColor: Colors.transparent,
-        backgroundImage: NetworkImage(coin.imageUrl),
+        backgroundImage: NetworkImage(coin.image),
       ),
       title: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -103,7 +105,7 @@ class CoinListTileWidget extends StatelessWidget {
           ),
           Spacer(),
           Text(
-            coin.priceUsd,
+            coin.currentPrice.toString(),
           ),
         ],
       ),
@@ -115,7 +117,7 @@ class CoinListTileWidget extends StatelessWidget {
           ),
           Spacer(),
           Text(
-            coin.percentChange24h,
+            coin.priceChangePercentage_24h.toString(),
           ),
         ],
       ),

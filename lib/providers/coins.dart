@@ -1,79 +1,46 @@
-import 'package:flutter/foundation.dart';
+import 'dart:convert';
+import 'dart:developer';
 
-class Coin {
-  late String id;
-  late String name;
-  late String imageUrl;
-  late String symbol;
-  late String priceUsd;
-  late String percentChange24h;
-  bool inProfit;
-
-  Coin(
-      {required this.id,
-      required this.name,
-      required this.imageUrl,
-      required this.symbol,
-      required this.priceUsd,
-      required this.inProfit,
-      required this.percentChange24h});
-}
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:papercoins/providers/models/coins.dart';
 
 class CoinsProvider with ChangeNotifier {
-  static List<Coin> _coins = [
-    Coin(
-        inProfit: true,
-        id: "1",
-        name: "Bitcoin",
-        imageUrl: "https://www.cryptocompare.com/media/19633/btc.png",
-        symbol: "BTC",
-        priceUsd: "55,230",
-        percentChange24h: "-10%"),
-    Coin(
-        inProfit: true,
-        id: "2",
-        name: "Ethereum",
-        imageUrl: "https://cryptologos.cc/logos/ethereum-eth-logo.png?v=014",
-        symbol: "ETH",
-        priceUsd: "10,230",
-        percentChange24h: "-10%"),
-    Coin(
-        inProfit: true,
-        id: "3",
-        name: "Solana",
-        imageUrl: "https://cryptologos.cc/logos/solana-sol-logo.png?v=014",
-        symbol: "SOL",
-        priceUsd: "10,230",
-        percentChange24h: "-10%"),
-    Coin(
-        inProfit: true,
-        id: "4",
-        name: "Litecoin",
-        imageUrl: "https://cryptologos.cc/logos/litecoin-ltc-logo.png?v=014",
-        symbol: "LTC",
-        priceUsd: "10,230",
-        percentChange24h: "-10%"),
-    Coin(
-        inProfit: true,
-        id: "5",
-        name: "Shiba INU",
-        imageUrl: "https://cryptologos.cc/logos/shiba-inu-shib-logo.png?v=014",
-        symbol: "SHIB",
-        priceUsd: "10,230",
-        percentChange24h: "-10%"),
-    Coin(
-        inProfit: true,
-        id: "6",
-        name: "Uniswap",
-        imageUrl: "https://cryptologos.cc/logos/uniswap-uni-logo.png?v=014",
-        symbol: "UNI",
-        priceUsd: "10,230",
-        percentChange24h: "-10%"),
-  ];
+  CoinsProvider() {
+    fetchCoinsFromCoinGecko();
+  }
+  bool isLoading = true;
+  List<CoinGeckoCoinModel> _coins = [];
 
-  static List<Coin> get coins {
+  List<CoinGeckoCoinModel> get coins {
     return [..._coins];
   }
 
-  void fetchCoins() async {}
+  void fetchCoinsFromCoinGecko() async {
+    _coins.clear();
+    isLoading = true;
+    notifyListeners();
+
+    final BASE_URL = "https://api.coingecko.com/api/v3/coins/markets";
+    final vs_currency = "inr";
+    final order = "market_cap_desc";
+    final per_page = "20";
+    final page = 1;
+    final sparkline = true;
+    final price_change_percentage = "7d";
+    final url = Uri.parse(
+        "$BASE_URL?vs_currency=$vs_currency&order=$order&per_page=$per_page&page=$page&sparkline=$sparkline&price_change_percentage=$price_change_percentage");
+
+    final response = await http.get(url);
+    final extractedData = json.decode(response.body);
+    final List<CoinGeckoCoinModel> loadedCoins = [];
+    for (var coin in extractedData) {
+      loadedCoins.add(CoinGeckoCoinModel.fromJson(coin));
+      // print("loaded");
+    }
+    _coins = loadedCoins;
+    log(_coins.length.toString());
+    isLoading = false;
+    notifyListeners();
+  }
 }

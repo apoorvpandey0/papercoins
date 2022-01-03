@@ -61,4 +61,9 @@ class HistoryProvider with ChangeNotifier {
         imageUrl: imageUrl));
     notifyListeners();
   }
+
+  void removeOrder(int index) {
+    _orders.removeAt(index);
+    notifyListeners();
+  }
 }

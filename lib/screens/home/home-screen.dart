@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:papercoins/providers/coins.dart';
 import 'package:papercoins/screens/home/feed/homepage.dart';
 import 'package:papercoins/screens/home/history/historypage.dart';
 import 'package:papercoins/screens/home/market/marketspage.dart';
 import 'package:papercoins/screens/home/portfolio/portfoliopage.dart';
 import 'package:papercoins/screens/home/settings/settingspage.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -39,6 +41,13 @@ class _HomeScreenState extends State<HomeScreen> {
           PortfolioPage(),
           SettingsPage(),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Provider.of<CoinsProvider>(context, listen: false)
+              .fetchCoinsFromCoinGecko();
+        },
+        child: Icon(LineIcons.plus),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
