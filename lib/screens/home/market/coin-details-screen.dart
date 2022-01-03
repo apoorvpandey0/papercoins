@@ -343,7 +343,7 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
             backgroundImage: NetworkImage(widget.coin.image),
           ),
           title: Text(
-            widget.coin.name + " (" + widget.coin.symbol + ")",
+            widget.coin.name + " (" + widget.coin.symbol.toUpperCase() + ")",
             style: TextStyle(fontSize: 20),
           ),
           trailing: Container(

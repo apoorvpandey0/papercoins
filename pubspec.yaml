@@ -37,6 +37,8 @@ dependencies:
   modal_bottom_sheet: ^2.0.0
   confetti: ^0.6.0
   http: ^0.13.0
+  shimmer: ^2.0.0
+
 
 
 dev_dependencies:

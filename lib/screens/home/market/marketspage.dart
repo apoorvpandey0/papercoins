@@ -8,6 +8,7 @@ import 'package:papercoins/providers/models/coins.dart';
 import 'package:papercoins/screens/home/market/coin-details-screen.dart';
 import 'package:papercoins/utils/utils.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class MarketPage extends StatefulWidget {
@@ -74,6 +75,8 @@ class AllCoinsListWidget extends StatelessWidget {
   const AllCoinsListWidget({Key? key, required this.coins}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    if (Provider.of<CoinsProvider>(context).isLoading)
+      return _buildAllCoinsListWidgetShimmer();
     // A list of items
     return ListView.builder(
       itemCount: coins.length,
@@ -82,6 +85,40 @@ class AllCoinsListWidget extends StatelessWidget {
         // return CoinListTileWidget(coin: );
       },
     );
+  }
+
+  Shimmer _buildAllCoinsListWidgetShimmer() {
+    return Shimmer(
+        child: ListView.builder(
+          itemCount: 15,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Colors.white,
+                ),
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 15,
+                      width: 170,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white),
+                    ),
+                  ],
+                ),
+
+                enableFeedback: true,
+                // trailing: Text("-10%"),
+              ),
+            );
+            // return CoinListTileWidget(coin: );
+          },
+        ),
+        gradient: LinearGradient(colors: [Colors.grey.shade100, Colors.grey]));
   }
 }
 
