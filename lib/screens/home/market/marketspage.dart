@@ -41,10 +41,10 @@ class MarketPageState extends State<MarketPage> {
                     indicatorColor: Colors.black,
                     tabs: [
                       Tab(
-                        text: "My Watchlist",
+                        text: "All Coins",
                       ),
                       Tab(
-                        text: "All Coins",
+                        text: "My Watchlist",
                       ),
                     ],
                   ),
@@ -56,7 +56,7 @@ class MarketPageState extends State<MarketPage> {
                 child: TabBarView(
                   children: [
                     AllCoinsListWidget(coins: value.coins),
-                    AllCoinsListWidget(coins: value.coins),
+                    AllCoinsListWidget(coins: value.getfavCoins),
                   ],
                 ),
               ),

@@ -8,6 +8,7 @@ import 'package:papercoins/providers/coins.dart';
 import 'package:papercoins/providers/models/coins.dart';
 import 'package:papercoins/screens/home/market/buy-sell-screen.dart';
 import 'package:papercoins/utils/utils.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -331,33 +332,44 @@ class _CoinDetailsPageState extends State<CoinDetailsPage> {
     );
   }
 
-  Padding _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-        leading: CircleAvatar(
-          foregroundColor: Colors.transparent,
-          backgroundColor: Colors.transparent,
-          backgroundImage: NetworkImage(widget.coin.image),
-        ),
-        title: Text(
-          widget.coin.name + " (" + widget.coin.symbol + ")",
-          style: TextStyle(fontSize: 20),
-        ),
-        trailing: Container(
-          width: 50,
-          child: Row(
-            children: [
-              Spacer(),
-              IconButton(
-                icon: Icon(LineIcons.heart),
-                onPressed: () {},
-              ),
-              // IconButton(
-              //   icon: Icon(Icons.fullscreen),
-              //   onPressed: () {},
-              // ),
-            ],
+  Widget _buildHeader() {
+    return Consumer<CoinsProvider>(
+      builder: (context, value, child) => Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListTile(
+          leading: CircleAvatar(
+            foregroundColor: Colors.transparent,
+            backgroundColor: Colors.transparent,
+            backgroundImage: NetworkImage(widget.coin.image),
+          ),
+          title: Text(
+            widget.coin.name + " (" + widget.coin.symbol + ")",
+            style: TextStyle(fontSize: 20),
+          ),
+          trailing: Container(
+            width: 50,
+            child: Row(
+              children: [
+                Spacer(),
+                IconButton(
+                  icon: value.isFavourite(widget.coin.id)
+                      ? Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : Icon(LineIcons.heart),
+                  onPressed: () {
+                    value.isFavourite(widget.coin.id)
+                        ? value.removeFromFavourites(widget.coin.id)
+                        : value.addToFavourites(widget.coin.id);
+                  },
+                ),
+                // IconButton(
+                //   icon: Icon(Icons.fullscreen),
+                //   onPressed: () {},
+                // ),
+              ],
+            ),
           ),
         ),
       ),

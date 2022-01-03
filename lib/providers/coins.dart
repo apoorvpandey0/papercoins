@@ -10,10 +10,41 @@ class CoinsProvider with ChangeNotifier {
     fetchCoinsFromCoinGecko();
   }
   bool isLoading = true;
-  List<CoinGeckoCoinModel> _coins = [];
+  Map<String, CoinGeckoCoinModel> _coins = {};
+  Set<String> _favCoins = {};
+
+  List<CoinGeckoCoinModel> get getfavCoins {
+    List<CoinGeckoCoinModel> coins = [];
+    for (var id in _favCoins) {
+      if (_coins.containsKey(id)) {
+        if (_coins[id] == null) {
+          _coins.remove(id);
+          _favCoins.remove(id);
+          continue;
+        } else
+          coins.add(_coins[id]!);
+      }
+    }
+    return coins;
+  }
+
+  bool isFavourite(String id) {
+    return _favCoins.contains(id);
+  }
+
+  void addToFavourites(String id) {
+    _favCoins.add(id);
+    print(_favCoins);
+    notifyListeners();
+  }
+
+  void removeFromFavourites(String id) {
+    _favCoins.remove(id);
+    notifyListeners();
+  }
 
   List<CoinGeckoCoinModel> get coins {
-    return [..._coins];
+    return _coins.values.toList();
   }
 
   void fetchCoinsFromCoinGecko() async {
@@ -33,9 +64,9 @@ class CoinsProvider with ChangeNotifier {
 
     final response = await http.get(url);
     final extractedData = json.decode(response.body);
-    final List<CoinGeckoCoinModel> loadedCoins = [];
+    final Map<String, CoinGeckoCoinModel> loadedCoins = {};
     for (var coin in extractedData) {
-      loadedCoins.add(CoinGeckoCoinModel.fromJson(coin));
+      loadedCoins[coin['id']] = (CoinGeckoCoinModel.fromJson(coin));
       // print("loaded");
     }
     _coins = loadedCoins;
