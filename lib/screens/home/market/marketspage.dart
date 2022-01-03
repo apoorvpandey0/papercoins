@@ -124,7 +124,10 @@ class CoinListTileWidget extends StatelessWidget {
           ),
           Spacer(),
           Text(
-            currencyFormatter(coin.priceChangePercentage_24h),
+            (coin.priceChange_24h.contains('-') ? '▾' : '▴') +
+                double.parse(coin.priceChangePercentage_24h)
+                    .toStringAsFixed(2) +
+                "%",
             style: TextStyle(
               color: coin.priceChangePercentage_24h.contains("-")
                   ? Colors.red

@@ -13,6 +13,31 @@ class CoinsProvider with ChangeNotifier {
   Map<String, CoinGeckoCoinModel> _coins = {};
   Set<String> _favCoins = {};
 
+  List<CoinGeckoCoinModel> get topGainers {
+    return _coins.values
+        .where((coin) => double.parse(coin.priceChangePercentage_24h) > 0)
+        .toList()
+          ..sort((a, b) => b.priceChangePercentage_24h
+              .compareTo(a.priceChangePercentage_24h));
+  }
+
+  List<CoinGeckoCoinModel> get topLosers {
+    return (_coins.values
+            .where((coin) => double.parse(coin.priceChangePercentage_24h) < 0)
+            .toList()
+              ..sort((a, b) => a.priceChangePercentage_24h
+                  .compareTo(b.priceChangePercentage_24h)))
+        .reversed
+        .toList();
+  }
+
+  List<CoinGeckoCoinModel> get biggestMarketCap {
+    return _coins.values
+        .where((coin) => double.parse(coin.marketCap) > 1000000000)
+        .toList()
+          ..sort((a, b) => b.marketCap.compareTo(a.marketCap));
+  }
+
   List<CoinGeckoCoinModel> get getfavCoins {
     List<CoinGeckoCoinModel> coins = [];
     for (var id in _favCoins) {
@@ -34,7 +59,6 @@ class CoinsProvider with ChangeNotifier {
 
   void addToFavourites(String id) {
     _favCoins.add(id);
-    print(_favCoins);
     notifyListeners();
   }
 
@@ -47,7 +71,7 @@ class CoinsProvider with ChangeNotifier {
     return _coins.values.toList();
   }
 
-  void fetchCoinsFromCoinGecko() async {
+  Future<void> fetchCoinsFromCoinGecko() async {
     _coins.clear();
     isLoading = true;
     notifyListeners();

@@ -4,58 +4,59 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:papercoins/providers/coins.dart';
 import 'package:papercoins/providers/models/coins.dart';
 import 'package:papercoins/screens/home/market/coin-details-screen.dart';
+import 'package:papercoins/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView(
-        children: [
-          CarouselSlider(
-            options: CarouselOptions(
-              height: 200.0,
-              autoPlay: true,
-              autoPlayInterval: Duration(seconds: 5),
-            ),
-            items: [1, 2, 3, 4, 5].map((i) {
-              return Builder(
-                builder: (BuildContext context) {
-                  return Container(
-                    width: MediaQuery.of(context).size.width,
-                    margin: EdgeInsets.symmetric(horizontal: 5.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                'https://images.pexels.com/photos/844124/pexels-photo-844124.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'),
-                            fit: BoxFit.cover)),
+    return Consumer<CoinsProvider>(
+      builder: (context, value, child) => Container(
+        child: RefreshIndicator(
+          onRefresh: () => value.fetchCoinsFromCoinGecko(),
+          child: ListView(
+            children: [
+              CarouselSlider(
+                options: CarouselOptions(
+                  height: 200.0,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 5),
+                ),
+                items: [1, 2, 3, 4, 5].map((i) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        margin: EdgeInsets.symmetric(horizontal: 5.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                    'https://images.pexels.com/photos/844124/pexels-photo-844124.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500'),
+                                fit: BoxFit.cover)),
+                      );
+                    },
                   );
-                },
-              );
-            }).toList(),
+                }).toList(),
+              ),
+              CoinsList(
+                title: "Top Gainers",
+                subtitle: "24 Hours",
+                coins: value.topGainers,
+              ),
+              CoinsList(
+                title: "Top Losers",
+                subtitle: "24 Hours",
+                coins: value.topLosers,
+              ),
+              CoinsList(
+                title: "Market Capitalization",
+                subtitle: "Coins with biggest market capitalization",
+                coins: value.biggestMarketCap,
+              ),
+            ],
           ),
-          CoinsList(
-            title: "Top Gainers",
-            subtitle: "24 Hours",
-            coins: [],
-          ),
-          CoinsList(
-            title: "Top Losers",
-            subtitle: "24 Hours",
-            coins: [],
-          ),
-          CoinsList(
-            title: "Fundamentals",
-            subtitle: "Coins with strong fundamentals",
-            coins: [],
-          ),
-          CoinsList(
-            title: "Fundamentals",
-            subtitle: "Coins with strong fundamentals",
-            coins: [],
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -72,105 +73,109 @@ class CoinsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<CoinsProvider>(
       builder: (context, value, child) => value.isLoading
-          ? CircularProgressIndicator()
-          : InkWell(
-              onTap: () {
-                value.fetchCoinsFromCoinGecko();
-              },
-              child: Container(
-                height: 200,
-                // color: Colors.amber,
-                margin: EdgeInsets.only(left: 8, right: 8, top: 20),
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title,
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black)),
-                    SizedBox(height: 5),
-                    Text(subtitle,
-                        style: TextStyle(fontSize: 13, color: Colors.black)),
-                    SizedBox(height: 8),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: coins.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              showCupertinoModalBottomSheet(
-                                  context: context,
-                                  builder: (context) =>
-                                      CoinDetailsPage(coin: coins[index]));
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                  height: 130,
-                                  width: 130,
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 15,
-                                            backgroundColor: Colors.transparent,
-                                            backgroundImage: NetworkImage(
-                                                coins[index].image),
+          ? Center(child: CircularProgressIndicator())
+          : Container(
+              height: 200,
+              // color: Colors.amber,
+              margin: EdgeInsets.only(left: 8, right: 8, top: 20),
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title,
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black)),
+                  SizedBox(height: 5),
+                  Text(subtitle,
+                      style: TextStyle(fontSize: 13, color: Colors.black)),
+                  SizedBox(height: 8),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: coins.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            showCupertinoModalBottomSheet(
+                                context: context,
+                                builder: (context) =>
+                                    CoinDetailsPage(coin: coins[index]));
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                                height: 130,
+                                width: 130,
+                                padding: EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    color: Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 15,
+                                          backgroundColor: Colors.transparent,
+                                          backgroundImage:
+                                              NetworkImage(coins[index].image),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Expanded(
+                                          child: Text(
+                                            coins[index].name,
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black),
                                           ),
-                                          SizedBox(width: 10),
-                                          Expanded(
-                                            child: Text(
-                                              coins[index].name,
-                                              maxLines: 2,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.black),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Spacer(),
-                                      Text(
-                                        coins[index].priceChange_24h.toString(),
-                                        style: TextStyle(
+                                        ),
+                                      ],
+                                    ),
+                                    // Spacer(),
+                                    Text(
+                                      currencyFormatter(
+                                          coins[index].currentPrice),
+                                      style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
-                                          // color: coins[index].inProfit??
-                                          // ? Colors.green
-                                          // : Colors.red
-                                        ),
+                                          color: Colors.black),
+                                    ),
+                                    // Spacer(),
+                                    Text(
+                                      (coins[index]
+                                                  .priceChange_24h
+                                                  .contains('-')
+                                              ? '▾'
+                                              : '▴') +
+                                          double.parse(coins[index]
+                                                  .priceChangePercentage_24h)
+                                              .toStringAsFixed(2) +
+                                          "%",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: coins[index]
+                                                .priceChange_24h
+                                                .contains('-')
+                                            ? Colors.red
+                                            : Colors.green,
                                       ),
-                                      Spacer(),
-                                      Text(
-                                        "\$ " +
-                                            coins[index]
-                                                .currentPrice
-                                                .toString(),
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black),
-                                      ),
-                                      Spacer(),
-                                    ],
-                                  )),
-                            ),
-                          );
-                        },
-                      ),
+                                    ),
+                                  ],
+                                )),
+                          ),
+                        );
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
     );
