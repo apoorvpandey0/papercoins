@@ -155,6 +155,50 @@ class CoinGeckoCoinModel {
     required this.sparklineIn_7d,
     required this.priceChangePercentage_7dInCurrency,
   });
+  CoinGeckoCoinModel.fromCoinDetailsAPI(Map<String, dynamic> json) {
+    id = json['id'];
+    symbol = json['symbol'];
+    name = json['name'];
+    image = json['image']['small'];
+    currentPrice = json['market_data']['current_price']['usd'].toString();
+    marketCap = json['market_data']['market_cap']['usd'].toString();
+    marketCapRank = json['market_data']['market_cap_rank'].toString();
+    high_24h = json['market_data']['high_24h']['usd'].toString();
+    low_24h = json['market_data']['low_24h']['usd'].toString();
+    priceChange_24h = json['market_data']['price_change_24h'].toString();
+    priceChangePercentage_24h =
+        json['market_data']['price_change_percentage_24h'].toString();
+    marketCapChange_24h =
+        json['market_data']['market_cap_change_24h'].toString();
+    marketCapChangePercentage_24h =
+        json['market_data']['market_cap_change_percentage_24h'].toString();
+
+    lastUpdated = json['market_data']['last_updated'].toString();
+    sparklineIn_7d =
+        SparklineIn_7d.fromJson(json['market_data']['sparkline_7d']);
+
+    priceChangePercentage_7dInCurrency = json['market_data']
+            ['price_change_percentage_7d_in_currency']['usd']
+        .toString();
+
+    // These are not in use currently
+    // fullyDilutedValuation =
+    //     json['market_data']['fully_diluted_valuation']['usd'].toString();
+    // totalVolume = json['market_data']['total_volume']['usd'].toString();
+    // circulatingSupply = json['market_data']['circulating_supply'].toString();
+    // totalSupply = json['market_data']['total_supply'].toString();
+    // maxSupply = json['market_data']['max_supply'].toString();
+    // ath = json['market_data']['ath']['usd'].toString();
+    // athChangePercentage =
+    //     json['market_data']['ath_change_percentage']['usd'].toString();
+    // athDate = json['market_data']['ath_date']['usd'].toString();
+    // atl = json['market_data']['atl']['usd'].toString();
+    // atlChangePercentage =
+    //     json['market_data']['atl_change_percentage']['usd'].toString();
+    // atlDate = json['market_data']['atl_date']['usd'].toString();
+    // roi = json['market_data']['roi'].toString();
+  }
+
   CoinGeckoCoinModel.fromJson(Map<String, dynamic> json) {
     // print(json);
     id = json['id'].toString();

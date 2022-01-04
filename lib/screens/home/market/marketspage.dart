@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icon.dart';
@@ -6,10 +8,73 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:papercoins/providers/coins.dart';
 import 'package:papercoins/providers/models/coins.dart';
 import 'package:papercoins/screens/home/market/coin-details-screen.dart';
+import 'package:papercoins/utils/data.dart';
 import 'package:papercoins/utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
+
+class MySearchDelegate extends SearchDelegate {
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      )
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final coins = Provider.of<CoinsProvider>(context);
+    final suggestions = COINS_DATA.keys
+        .where((coin) => coin.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    if (suggestions.isEmpty) {
+      return Center(
+        child: Text('No results found'),
+      );
+    }
+    return ListView.builder(
+      itemCount: suggestions.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          onTap: () async {
+            CoinGeckoCoinModel coin =
+                await Provider.of<CoinsProvider>(context, listen: false)
+                    .getCoin(suggestions[index]) as CoinGeckoCoinModel;
+
+            showCupertinoModalBottomSheet(
+                context: context,
+                builder: (context) => CoinDetailsPage(coin: coin));
+          },
+          title: Text(suggestions[index].toString()),
+        );
+        // return CoinListTileWidget(
+        //   coin: suggestions[index],
+        // );
+      },
+    );
+  }
+}
 
 class MarketPage extends StatefulWidget {
   @override
@@ -25,13 +90,21 @@ class MarketPageState extends State<MarketPage> {
         child: Scaffold(
           body: Column(
             children: <Widget>[
-              // construct the profile details widget here
+              // Search field
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: SizedBox(height: 50, child: CupertinoSearchTextField()),
+                child: SizedBox(
+                  height: 50,
+                  child: GestureDetector(
+                      onTap: () {
+                        showSearch(
+                            context: context, delegate: MySearchDelegate());
+                      },
+                      child: AbsorbPointer(child: CupertinoSearchTextField())),
+                ),
               ),
 
-              // the tab bar with two items
+              // All coins/ Watchlist  - the tab bar with two items
               SizedBox(
                 height: 50,
                 child: AppBar(

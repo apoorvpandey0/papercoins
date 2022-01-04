@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:papercoins/providers/models/coins.dart';
+import 'package:papercoins/utils/data.dart';
 
 class CoinsProvider with ChangeNotifier {
   CoinsProvider() {
@@ -12,6 +13,23 @@ class CoinsProvider with ChangeNotifier {
   bool isLoading = true;
   Map<String, CoinGeckoCoinModel> _coins = {};
   Set<String> _favCoins = {};
+
+  Future getCoin(String id) async {
+    CoinGeckoCoinModel coin;
+    id = COINS_DATA[id]!;
+    final BASE_URL = "https://api.coingecko.com/api/v3/coins/$id";
+    final url = Uri.parse(
+        "$BASE_URL?localization=false&tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=true");
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      coin = CoinGeckoCoinModel.fromCoinDetailsAPI(json.decode(response.body));
+    } else {
+      throw Exception('Failed to load coin');
+    }
+    _coins[id] = coin;
+    notifyListeners();
+    return coin;
+  }
 
   List<CoinGeckoCoinModel> get topGainers {
     return _coins.values
