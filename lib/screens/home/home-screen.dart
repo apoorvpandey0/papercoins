@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:papercoins/providers/coins.dart';
@@ -45,9 +46,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Provider.of<CoinsProvider>(context, listen: false)
-                .fetchCoinsFromCoinGecko();
+          onPressed: () async {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .add({"hi": 123});
+            // Provider.of<CoinsProvider>(context, listen: false)
+            //     .fetchCoinsFromCoinGecko();
           },
           child: Icon(LineIcons.plus),
         ),

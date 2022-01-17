@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1015557437303",
+    "project_id": "papercoins-f5fc7",
+    "storage_bucket": "papercoins-f5fc7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015557437303:android:ac3e1bb42cf1c7aaf95372",
+        "android_client_info": {
+          "package_name": "com.example.papercoins"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1015557437303-qsrvt8p2ovae41uniujtlfjnqvmirhh4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXQwWKtJJ3188var5OtJC2koNY6R8dN9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1015557437303-qsrvt8p2ovae41uniujtlfjnqvmirhh4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

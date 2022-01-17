@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:papercoins/providers/coins.dart';
 import 'package:papercoins/providers/history.dart';
@@ -5,7 +6,9 @@ import 'package:papercoins/providers/investments.dart';
 import 'package:papercoins/screens/home/home-screen.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
