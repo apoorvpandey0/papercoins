@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:papercoins/providers/investments.dart';
+import '../../../providers/investments.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 

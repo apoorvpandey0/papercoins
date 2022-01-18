@@ -38,8 +38,10 @@ dependencies:
   confetti: ^0.6.0
   http: ^0.13.0
   shimmer: ^2.0.0
+  
   firebase_core: ^1.11.0
   cloud_firestore: ^3.1.6
+  firebase_auth: ^3.3.5
 
 
 

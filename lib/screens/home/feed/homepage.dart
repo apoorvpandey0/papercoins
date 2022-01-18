@@ -1,10 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:papercoins/providers/coins.dart';
-import 'package:papercoins/providers/models/coins.dart';
-import 'package:papercoins/screens/home/market/coin-details-screen.dart';
-import 'package:papercoins/utils/utils.dart';
+import '../../../providers/coins.dart';
+import '../../../providers/models/coins.dart';
+import '../../../screens/home/market/coin-details-screen.dart';
+import '../../../utils/utils.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 

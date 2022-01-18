@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:papercoins/providers/history.dart';
+import '../../../providers/history.dart';
 import 'package:provider/provider.dart';
 
 class HistoryPage extends StatelessWidget {

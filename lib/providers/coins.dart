@@ -3,8 +3,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:papercoins/providers/models/coins.dart';
-import 'package:papercoins/utils/data.dart';
+import '../../providers/models/coins.dart';
+import '../../utils/data.dart';
 
 class CoinsProvider with ChangeNotifier {
   CoinsProvider() {
@@ -35,16 +35,16 @@ class CoinsProvider with ChangeNotifier {
     return _coins.values
         .where((coin) => double.parse(coin.priceChangePercentage_24h) > 0)
         .toList()
-          ..sort((a, b) => b.priceChangePercentage_24h
-              .compareTo(a.priceChangePercentage_24h));
+      ..sort((a, b) =>
+          b.priceChangePercentage_24h.compareTo(a.priceChangePercentage_24h));
   }
 
   List<CoinGeckoCoinModel> get topLosers {
     return (_coins.values
             .where((coin) => double.parse(coin.priceChangePercentage_24h) < 0)
             .toList()
-              ..sort((a, b) => a.priceChangePercentage_24h
-                  .compareTo(b.priceChangePercentage_24h)))
+          ..sort((a, b) => a.priceChangePercentage_24h
+              .compareTo(b.priceChangePercentage_24h)))
         .reversed
         .toList();
   }
@@ -53,7 +53,7 @@ class CoinsProvider with ChangeNotifier {
     return _coins.values
         .where((coin) => double.parse(coin.marketCap) > 1000000000)
         .toList()
-          ..sort((a, b) => b.marketCap.compareTo(a.marketCap));
+      ..sort((a, b) => b.marketCap.compareTo(a.marketCap));
   }
 
   List<CoinGeckoCoinModel> get getfavCoins {

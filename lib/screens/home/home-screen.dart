@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:papercoins/providers/coins.dart';
-import 'package:papercoins/screens/home/feed/homepage.dart';
-import 'package:papercoins/screens/home/history/historypage.dart';
-import 'package:papercoins/screens/home/market/marketspage.dart';
-import 'package:papercoins/screens/home/portfolio/portfoliopage.dart';
-import 'package:papercoins/screens/home/settings/settingspage.dart';
+import '../../providers/coins.dart';
+import '../../screens/home/feed/homepage.dart';
+import '../../screens/home/history/historypage.dart';
+import '../../screens/home/market/marketspage.dart';
+import '../../screens/home/portfolio/portfoliopage.dart';
+import '../../screens/home/settings/settingspage.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -47,11 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            await FirebaseFirestore.instance
-                .collection('users')
-                .add({"hi": 123});
-            // Provider.of<CoinsProvider>(context, listen: false)
-            //     .fetchCoinsFromCoinGecko();
+            // await FirebaseFirestore.instance
+            //     .collection('users')
+            //     .add({"hi": 123});
+            await Provider.of<CoinsProvider>(context, listen: false)
+                .fetchCoinsFromCoinGecko();
           },
           child: Icon(LineIcons.plus),
         ),
